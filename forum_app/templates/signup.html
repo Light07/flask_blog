@@ -1,0 +1,62 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main">
+    <div class="container">
+        <div class="login-form">
+            <div class="login-group">注册</div>
+                <form class="form-horizontal" action="" method="post" name="signup">
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    <div class="form-group">
+      <label class="col-lg-2 control-label">用户名：</label>
+        <div class="col-lg-10">
+            {{ form.username }}
+            {% for message in form.username.errors %}
+                <div class="alert alert-danger">{{message}}</div>
+            {% endfor %}
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-2 control-label">手机号：</label>
+        <div class="col-lg-10">
+            {{ form.phonenumber }}
+            {% for message in form.phonenumber.errors %}
+                <div class="alert alert-danger">{{message}}</div>
+            {% endfor %}
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-2 control-label">密码：</label>
+        <div class="col-lg-10">
+            {{ form.password }}
+            {% for message in form.password.errors %}
+                <div class="alert alert-danger">{{message}}</div>
+            {% endfor %}
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-2 control-label">再次输入密码：</label>
+        <div class="col-lg-10">
+            {{ form.pd_confirm }}
+            {% for message in form.pd_confirm.errors %}
+                <div class="alert alert-danger">{{message}}</div>
+            {% endfor %}
+      </div>
+    </div>
+    <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-10">
+                <dt><a href="login">已有帐号？</a> </dt>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-lg-offset-2 col-lg-10">
+        {{ form.signup}}
+      </div>
+    </div>
+    </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

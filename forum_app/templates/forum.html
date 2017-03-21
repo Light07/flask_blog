@@ -1,0 +1,148 @@
+{% from 'bootstrap/wtf.html' import form_field %}
+{% extends "base.html" %}
+
+{% block head %}
+{% include 'header.html' %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+<br>
+    <!--widget to publish posts&#45;&#45; start-->
+    <div class="modal-div" align="right">
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+            <span class="glyphicon glyphicon-plus"></span>新建博文</button>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">发帖</h4>
+          </div>
+          <form method="POST" action="" id="form1", name="">
+
+          <div class="modal-body">
+          {{ form.csrf_token }}
+          {{ form.hidden_tag() }}
+          <fieldset>
+          <div class="control-group">
+              <!-- Text input-->
+              <!--<label class="control-label" id="postid">标题</label>-->
+              <div class="controls">{{ form_field(form.title) }}</div>
+          </div>
+
+        <div class="control-group">
+              <!-- Text input-->
+              <!--<label class="control-label" id="postcategory">类别</label>-->
+              <div class="controls">
+                  {{ form_field(form.category) }}
+              </div>
+        </div>
+
+        {% include 'ckeditor_in_page.html' %}
+        </fieldset>
+
+          </div>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                {{ form.publish(class="btn btn-primary") }}
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--widget to publish posts &#45;&#45; end-->
+
+    <div class="main">
+            <div class="article">
+                <div class="content">
+                    <div class="posts-expand">
+                        <div class="post post-type-normal" style="opacity: 1; display: block; transform: translateY(0px);">
+                            <ul>
+                                <li>
+                                    <!--<div class="post-header">-->
+                                        <table class="table table-hover post-meta small forum">
+                                            <!--<thead></thead>-->
+                                            <tbody>
+                                            {% for item in range(shown_posts|length) %}
+                                                <tr>
+                                                    <td class="post-time" width="100px" style="border-bottom-style:1px dashed;">
+                                                        {{shown_posts[item]["post_insert_date"]|safe}}
+                                                    </td>
+                                                    <td class="post-title" style="border-bottom-style:1px dashed;">&nbsp;
+                                                        {% if is_admin or user_have_admin_right_to_post|string == shown_posts[item]['post_author']|string%}
+                                                        <a href= "{{url_for('blue_admin.posts_detail',
+                                                    id=shown_posts[item]['post_id'],
+                                                    title=shown_posts[item]['post_title'],
+                                                    category=shown_posts[item]['category_name'],
+                                                    author=shown_posts[item]['post_author'],
+                                                    contents=shown_posts[item]['post_contents'],
+                                                    create_time=shown_posts[item]['post_insert_date'])}}">{{shown_posts[item]["post_title"]|safe}}</a>
+                                                        {% else %}
+                                                        <a href= "{{url_for('blue_user.posts_detail',
+                                                    id=shown_posts[item]['post_id'],
+                                                    title=shown_posts[item]['post_title'],
+                                                    category=shown_posts[item]['category_name'],
+                                                    author=shown_posts[item]['post_author'],
+                                                    contents=shown_posts[item]['post_contents'],
+                                                    create_time=shown_posts[item]['post_insert_date'])}}">{{shown_posts[item]["post_title"]|safe}}</a>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="post-category" width="150px" style="border-bottom-style:1px dashed;">
+                                                        &nbsp; 类别：
+                                                        <span>
+                                                          <a href="{{ url_for('forum', category=post_category) }}" itemprop="url" rel="index">
+                                                            <span>{{shown_posts[item]["category_name"]|safe}}</span>
+                                                          </a>
+                                                        </span>
+                                                    </td>
+                                                    <td class="post-author" width="150px" style="border-bottom-style:1px dashed;">
+                                                      &nbsp; &nbsp; 作者：
+                                                        <span itemprop="about" >
+                                                            <span itemprop="name">{{shown_posts[item]["post_author"]|safe}}</span>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    <!--</div>-->
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <div class="main">
+        <ul>
+        <li>
+            <p> &nbsp 想学习更多不同内容？请点击以下标签：</p>
+            <!--include all valid categories-->
+            <div class="category">
+                {% for item in all_categories %}
+                    {% include 'categories.html' %}
+                {% endfor %}
+            </div>
+        </li>
+    </ul>
+
+    </div>
+
+    <div class="page">
+                <div class="">        <!--include pagination templates with values comes form views-->
+                    {% include 'pagination.html' %}
+                </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}

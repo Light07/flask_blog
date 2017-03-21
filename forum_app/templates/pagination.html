@@ -1,0 +1,33 @@
+
+<ul class="pagination pagination-inverse active">
+    {% if pagination.has_prev %}
+        <li class="previous btn-inverse">
+            <a href="{{ url_for_other_page(pagination.page - 1) }}" class="fui-arrow-left"></a>
+        </li>
+    {% endif %}
+
+    {%- for page in pagination.iter_pages() %}
+        <li>
+            {% if page %}
+                {% if page != pagination.page %}
+                <li>
+                    <a href="{{ url_for_other_page(page) }}">{{ page }}</a>
+                </li>
+                {% else %}
+                <li>
+                    <a onclick="window.location='/forum/{{page}};">{{ page }}</a>
+                </li>
+                {% endif %}
+            {% else %}
+                <li><a class=ellipsis>…</a></li>
+            {% endif %}
+        </li>
+    {%- endfor %}
+
+    {% if pagination.has_next %}
+        <li class="next btn-inverse">
+            <a href="{{ url_for_other_page(pagination.page + 1)}}" class="fui-arrow-right"></a>
+        </li>
+    {% endif %}
+
+</ul>

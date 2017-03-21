@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+{% include 'header.html' %}
+{% endblock %}
+
+{% block content %}
+<div id="main" class="main">
+      <div class="article">
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+              <div class="post post-type-normal" itemscope="" style="opacity: 1; display: block; transform: translateY(0px);">
+                  <header class="post-header">
+                      <h3 class="post-title-detail">
+                            {{ post_title }}
+                      </h3>
+					  <div class="post-meta small">
+                      	<span class="post-time">
+							Posted on {{ post_create_time }}
+                      	</span>
+                      	<span class="post-category">
+                            &nbsp; | &nbsp; 类别：
+							<span>
+							  <a href="{{ url_for('forum', category=post_category) }}" itemprop="url" rel="index">
+								<span>{{ post_category }}</span>
+							  </a>
+							</span>
+                		</span>
+						<span class="post-category">
+                          &nbsp; | &nbsp; 作者：
+							<span itemprop="about" >
+								<span itemprop="name">{{ post_author }}</span>
+							</span>
+						</span>
+
+                      </div>
+                  </header>
+
+                  <div class="post-body">
+
+                    <div><p class="post-content">{{ post_contents|safe }}</p></div>
+                  </div>
+              </div>
+            </div>
+        </div>
+      </div>
+</div>
+{% endblock %}

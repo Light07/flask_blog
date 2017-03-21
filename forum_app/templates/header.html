@@ -1,0 +1,33 @@
+<nav class="navbar navbar-default panel-heading" role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+        <span class="sr-only">Toggle navigation</span>
+    </button>
+    <a class="navbar-brand glyphicon glyphicon-home" href="{{ url_for('forum') }}"></a>
+  </div>
+    <div class="collapse navbar-collapse" id="navbar-collapse-01">
+      <ul class="nav navbar-nav">
+          <li class="active"><a href= "{{ url_for('forum') }}"><div id="latest_item">最新文章</div></a></li>
+        <li><a href="{{ url_for('forum', category='python' ) }}"><div id="python">测试开发</div></a></li>
+        <li><a href="{{ url_for('forum', category='SQL' ) }}"><div id="SQL">SQL相关</div></a></li>
+        <li><a href="{{ url_for('forum', category='FE' ) }}"><div id="FE">前端知识</div></a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/logout" class="navbar-text">退出登录</a></li>
+      </ul>
+    </div>
+</nav><!-- /navbar -->
+
+<script type="text/javascript">
+
+$(function(){
+    {% if category %}
+        var type = '{{ category.decode('utf-8') }}';
+        if (type !== 'None'){
+		    $('#latest_item').parents('li').removeClass('active');
+			$('#' + type).parents('li').addClass('active');
+		}
+	{% endif %}
+})
+
+</script>

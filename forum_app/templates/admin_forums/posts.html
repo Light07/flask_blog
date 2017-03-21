@@ -1,0 +1,119 @@
+<!-- extend base layout -->
+{% from 'bootstrap/wtf.html' import form_field %}
+{% extends "base.html" %}
+
+
+{% block head %}
+{% include 'header.html' %}
+{% endblock %}
+
+{% block content %}
+<div id="main" class="main" >
+      <div class="article" >
+        <div id="content" class="content">
+            <div id="posts" class="posts-expand">
+              <div class="post post-type-normal" itemscope="" style="opacity: 1; display: block; transform: translateY(0px);">
+                  <div class="post-header">
+                      <h3 class="post-title-detail">
+                            {{ post_title }}
+                      </h3>
+					  <div class="post-meta small">
+                      	<span class="post-time">
+							Posted on {{ post_create_time }}
+                      	</span>
+                      	<span class="post-category">
+                            &nbsp; | &nbsp; 类别：
+							<span>
+							  <a href="{{ url_for('forum', category=post_category) }}" itemprop="url" rel="index">
+								<span>{{ post_category }}</span>
+							  </a>
+							</span>
+                		</span>
+						<span class="post-category">
+                          &nbsp; | &nbsp; 作者：
+							<span itemscope="" >
+								<span itemprop="name">{{ post_author }}</span>
+							</span>
+						</span>
+
+						<span class="post-edit">
+							&nbsp; | &nbsp;
+							<button class="btn btn-info" id="editbutton">修改文章</button>
+						</span>
+						<span class="post-delete">
+							&nbsp; | &nbsp;
+							<button class="btn btn-warning" id="deletebutton">删除文章</button>
+							<!--<input type="button" class = "btn btn-error"  value="删除文章"  onclick="window.location='/deletepost/{{ pid }}';">-->
+						</span>
+
+                      </div>
+                  </div>
+
+                  <div class="post-body">
+                      <div><p class="post-content">{{ post_contents|safe }}</p></div>
+                  </div>
+              </div>
+            </div>
+        </div>
+      </div>
+</div>
+
+<form method="POST" action="" id="form1", name="" style="display: none">
+
+      <div class="modal-body">
+      {{ form.csrf_token }}
+      <fieldset>
+      <div class="control-group">
+          <!-- Text input-->
+          <!--<label class="control-label" id="postid">标题</label>-->
+          <div class="controls">{{ form_field(form.title) }}</div>
+      </div>
+
+    <div class="control-group">
+          <!-- Text input-->
+          <!--<label class="control-label" id="postcategory">类别</label>-->
+          <div class="controls">
+              {{ form_field(form.category) }}
+          </div>
+    </div>
+
+          {% include 'ckeditor_in_page.html' %}
+
+    </fieldset>
+
+      </div>
+	  <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">取消</button>
+            {{ form.publish(class="btn btn-primary") }}
+      </div>
+      </form>
+{% include 'footer.html' %}
+<script>
+
+	$(function(){
+		$('#editbutton').on('click', function(event) {
+			$('#form1').show();
+		})
+
+		$('.btn-cancel').on('click', function(event) {
+			$('#form1').hide();
+			$('#posts').show();
+		})
+
+		$('#editbutton').on('click', function(event) {
+			$('#posts').hide();
+		})
+
+		$('#deletebutton').on('click', function(event) {
+			var m=confirm("你确定要删除此文吗？")
+			if(m==true)
+			{
+			window.location='/deletepost/{{ pid }}';
+			}
+
+		})
+	})
+
+
+	</script>
+{% endblock %}
