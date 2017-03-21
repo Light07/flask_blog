@@ -1,5 +1,5 @@
-# flask_blog
-纯flask实现的一个blog。
+# 纯flask实现的一个blog。
+
 网站的整体效果：
 登录页面（也是首页）：
 ![](http://mmbiz.qpic.cn/mmbiz_png/KrjxpeiaZUP6OdRkcKO9IJ98QiarEpibKwJ74OrcrFlpqTKKElJQwf8QfibUPzrC5MlHTnaZaUytrPHCsdCLG3wyrw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1)
