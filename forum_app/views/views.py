@@ -25,7 +25,7 @@ def logout():
         session.pop('username', None)
     return redirect(url_for('login'))
 
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if 'username' in session:
@@ -93,7 +93,7 @@ def forum(page):
     username= session["username"] if 'username' in session else None
 
     def url_for_other_page(page):
-        args = dict(request.view_args.items() + request.args.to_dict().items())
+        args = dict(list(request.view_args.items()) + list(request.args.to_dict().items()))
         args['page'] = page
         return url_for(request.endpoint, **args)
 
@@ -109,7 +109,7 @@ def forum(page):
         content = request.form.get('post')
         content = request.form.get('editor1')
 
-        if request.form.get('publish') == '发布'.decode('utf-8'):
+        if request.form.get('publish') == '发布':
 
             create_post(title, category, content, session["memberid"])
             total_count = count_post_numbers_by_category(category)

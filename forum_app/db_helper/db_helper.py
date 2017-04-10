@@ -70,7 +70,7 @@ def get_all_categories():
     all_category_raw = session.query(Categories.CName, Categories.CId).all()
     for item in all_category_raw:
         valid_category_sql = '''select count(1) from categories c inner join posts p on c.CId=p.CId where c.CId='{cid}' and p.shownpost=1 '''.format(cid=item[1])
-        if session.execute(text(valid_category_sql.decode('utf-8'))).scalar():
+        if session.execute(text(valid_category_sql)).scalar():
             all_category.append(item[0])
 
     return all_category
@@ -114,15 +114,15 @@ def get_member_id_by_username(username):
 
 def count_post_numbers_by_category(category):
     if category and isinstance(category, str):
-        category = category.decode('utf-8')
+        category = category
 
     if category:
-        all_records_num = '''select count(*) from categories c inner join posts p on c.CId=p.CId and c.CName='{category}' and p.shownpost=1'''.format(category=category.encode('utf-8'))
-        all_count = session.execute(text(all_records_num.decode('utf-8'))).scalar()
+        all_records_num = '''select count(*) from categories c inner join posts p on c.CId=p.CId and c.CName='{category}' and p.shownpost=1'''.format(category=category)
+        all_count = session.execute(text(all_records_num)).scalar()
         session.close()
     else:
         all_records_num = '''select count(*) from posts where shownpost=1'''
-        all_count = session.execute(text(all_records_num.decode('utf-8'))).scalar()
+        all_count = session.execute(text(all_records_num)).scalar()
         session.close()
     return int(all_count)
 
@@ -141,66 +141,49 @@ def is_post_create_by_user(pid, memberid):
     return True if count > 0 else False
 
 def create_post(title, category, content, member_id):
-    if title and isinstance(title, str):
-        title = title.decode('utf-8')
-    if category and isinstance(category, str):
-        category = category.decode('utf-8')
-    if content and isinstance(content, str):
-        content = content.decode('utf-8')
+    cid_query = '''select cid from Categories where cname = '{category}' '''.format(category=category)
 
-    cid_query = '''select cid from Categories where cname = '{category}' '''.format(category=category.encode('utf-8'))
-
-    cid = session.execute(text(cid_query.decode('utf-8'))).scalar()
+    cid = session.execute(text(cid_query)).scalar()
     if not cid:
-        cid_insert = '''insert into categories values('{category}')'''.format(category=category.encode('utf-8'))
-        session.execute(text(cid_insert.decode('utf-8')))
+        cid_insert = '''insert into categories values('{category}')'''.format(category=category)
+        session.execute(text(cid_insert))
         session.commit()
         time.sleep(1)
-        cid = session.execute(text(cid_query.decode('utf-8'))).scalar()
-    sql_string = '''insert into posts(title, contents, memberid, cid) values('{title}', '{contents}', '{memberid}', '{cid}')'''.format(title=title.encode('utf-8'), contents=content.encode('utf-8'), memberid=member_id, cid=cid)
-    session.execute(text(sql_string.decode('utf-8')))
+        cid = session.execute(text(cid_query)).scalar()
+    sql_string = '''insert into posts(title, contents, memberid, cid) values('{title}', '{contents}', '{memberid}', '{cid}')'''.format(title=title, contents=content, memberid=member_id, cid=cid)
+    session.execute(text(sql_string))
     session.commit()
     session.close()
 
 def update_post(title, category, content, id):
 
-    if title and isinstance(title, str):
-        title = title.decode('utf-8')
-    if category and isinstance(category, str):
-        category = category.decode('utf-8')
-    if content and  isinstance(content, str):
-        content = content.decode('utf-8')
-
-    cid_query = '''select cid from Categories where cname = '{category}' '''.format(category=category.encode('utf-8'))
-    cid = session.execute(text(cid_query.decode('utf-8'))).scalar()
+    cid_query = '''select cid from Categories where cname = '{category}' '''.format(category=category)
+    cid = session.execute(text(cid_query)).scalar()
 
     if not cid:
-        cid_insert = '''insert into categories values('{category}')'''.format(category=category.encode('utf-8'))
-        session.execute(text(cid_insert.decode('utf-8')))
+        cid_insert = '''insert into categories values('{category}')'''.format(category=category)
+        session.execute(text(cid_insert))
         session.commit()
         time.sleep(1)
-        cid = session.execute(text(cid_query.decode('utf-8'))).scalar()
-    sql_string = '''update posts set title='{title}', contents='{contents}', cid='{cid}' where pid='{id}' '''.format(title=title.encode('utf-8'), contents=content.encode('utf-8'),cid=int(cid), id=int(id))
-    session.execute(text(sql_string.decode('utf-8')))
+        cid = session.execute(text(cid_query)).scalar()
+    sql_string = '''update posts set title='{title}', contents='{contents}', cid='{cid}' where pid='{id}' '''.format(title=title, contents=content,cid=int(cid), id=int(id))
+    session.execute(text(sql_string))
     session.commit()
     session.close()
 
 def delete_post(pid):
     sql_string = '''update posts set shownpost=0 where pid='{pid}' '''.format(pid=pid)
-    session.execute(text(sql_string.decode('utf-8')))
+    session.execute(text(sql_string))
     session.commit()
     session.close()
 
 def get_post_by_category(category, page):
-    if category and isinstance(category, unicode):
-        category = category.encode('utf-8')
-
     results = []
     records_per_page_sql = '''select top {PER_PAGE} * from posts p inner join categories c \
 on p.cid=c.cid and c.cname= N'{category}' where p.pid not in (select top {target_page} p.pid from posts p inner join categories c \
 on p.cid=c.cid and c.cname= N'{category}' order by p.pid desc) and p.shownpost=1 order by p.pid desc'''.format(PER_PAGE=app.config["PER_PAGE"], target_page=(page - 1) * app.config["PER_PAGE"], category=category)
 
-    records_per_page = session.execute(text(records_per_page_sql.decode('utf-8'))).fetchall()
+    records_per_page = session.execute(text(records_per_page_sql)).fetchall()
 
     for i in records_per_page:
         single_post = {}

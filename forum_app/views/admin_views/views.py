@@ -21,10 +21,9 @@ def posts_detail():
 
     form.category.data = request.args.get("category")
     form.title.data = request.args.get("title")
-    # form.post.data = request.args.get("contents")
 
     if request.method == "POST" and form.validate_on_submit():
-        if request.form.get('publish') == '发布'.decode('utf-8'):
+        if request.form.get('publish') == '发布':
             update_post(request.form.get('title'), request.form.get('category'),  request.form.get('editor1'), id=pid)
             return redirect(url_for('forum'))
 
